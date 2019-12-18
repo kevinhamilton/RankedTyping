@@ -21,5 +21,6 @@ namespace RankedTyping.Models
         
         public DbSet<Result> Results { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Achievement> Achievements { get; set; }
     }
 }
