@@ -10,7 +10,7 @@ namespace RankedTyping.Controllers
     [Route("/result")]
     public class ResultController : ControllerBase
     {
-        
+
         private readonly RankedContext _context;
 
         public ResultController(RankedContext context)
@@ -22,7 +22,6 @@ namespace RankedTyping.Controllers
         public ActionResult Store([FromBody] ResultRequest request)
         {
             var userId = Convert.ToInt32(User.Identity.Name);
-            
             var result = new Result()
             {
                 UserId = (userId > 0) ? userId : null as int?,
@@ -36,7 +35,7 @@ namespace RankedTyping.Controllers
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             };
-            
+
             _context.Results.Add(result);
             _context.SaveChanges();
 
@@ -45,7 +44,7 @@ namespace RankedTyping.Controllers
                 var checker = new CheckForAchievements(_context);
                 checker.Check(userId);
             }
-            
+
             return Ok(result);
         }
     }

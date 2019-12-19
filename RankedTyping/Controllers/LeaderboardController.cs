@@ -12,7 +12,7 @@ namespace RankedTyping.Controllers
     [Route("/leaderboard")]
     public class LeaderboardController : ControllerBase
     {
-        
+
         private readonly RankedContext _context;
 
         /**
@@ -22,7 +22,7 @@ namespace RankedTyping.Controllers
         {
             _context = context;
         }
-        
+
         // GET /
         [HttpGet]
         public async Task<ActionResult> List()
@@ -33,13 +33,13 @@ namespace RankedTyping.Controllers
                 .Include(r => r.User)
                 .Take(10)
                 .ToListAsync();
-            
+
             var recent = await _context.Results
                 .OrderByDescending(r => r.Id)
                 .Include(r => r.User)
                 .Take(10)
                 .ToListAsync();
-            
+
             var today = await _context.Results
                 .Where(r => Convert.ToDateTime(r.CreatedAt).CompareTo(DateTime.Now.AddDays(-1)) > 1)
                 .OrderByDescending(r => r.Id)
@@ -47,9 +47,9 @@ namespace RankedTyping.Controllers
                 .Take(10)
                 .ToListAsync();
 
-            return Ok(new LeaderboardResponse {Leaders = leaders, Recent = recent, Today = today});
+            return Ok(new LeaderboardResponse { Leaders = leaders, Recent = recent, Today = today });
         }
-        
+
         // GET /leaderboard/achievements
         [Route("/leaderboard/achievements")]
         [HttpGet]
