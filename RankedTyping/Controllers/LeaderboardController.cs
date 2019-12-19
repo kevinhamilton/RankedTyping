@@ -25,7 +25,7 @@ namespace RankedTyping.Controllers
         
         // GET /
         [HttpGet]
-        public async Task<OkObjectResult> List()
+        public async Task<ActionResult> List()
         {
             var leaders = await _context.Results
                 .OrderByDescending(r => r.Wpm)
@@ -53,7 +53,7 @@ namespace RankedTyping.Controllers
         // GET /leaderboard/achievements
         [Route("/leaderboard/achievements")]
         [HttpGet]
-        public async Task<OkObjectResult> Achievements()
+        public async Task<ActionResult> Achievements()
         {
             var leaders = await _context.Users
                 .OrderByDescending(u => u.AchievementPoints)

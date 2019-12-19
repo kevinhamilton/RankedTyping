@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace RankedTyping.Models
 {
     public class TestType
     {
-        // todo: Possible option for multiple types of test IE code, books, songs
+        [Column("id")] 
+        public int Id { get; set; }
     }
 }

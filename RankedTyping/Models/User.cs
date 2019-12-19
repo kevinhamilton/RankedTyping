@@ -32,7 +32,7 @@ namespace RankedTyping.Models
         
         [Column("average_accuracy")] 
         [JsonPropertyName("average_accuracy")]
-        public string AverageAccuracy { get; set; }
+        public int AverageAccuracy { get; set; }
         
         public string Email { get; set; }
         
@@ -55,5 +55,8 @@ namespace RankedTyping.Models
         [Column("updated_at")] 
         [JsonPropertyName("updated_at")]
         public DateTime UpdatedAt { get; set; }
+        
+        [NotMapped]
+        public string? Token { get; set; }
     }
 }

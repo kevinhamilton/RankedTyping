@@ -1,4 +1,6 @@
 #nullable enable
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -8,6 +10,7 @@ namespace RankedTyping.Models
     public class Result
     {
         [Column("id")] 
+        [Key]
         public int Id { get; set; }
 
         [Column("user_id")]
@@ -37,15 +40,15 @@ namespace RankedTyping.Models
         public int Errors { get; set; }   
         
         [Column("accuracy")]
-        public string Accuracy { get; set; }   
+        public decimal Accuracy { get; set; }   
         
         [Column("created_at")]
         [JsonPropertyName("created_at")]
-        public string CreatedAt { get; set; }   
+        public DateTime CreatedAt { get; set; }   
         
         [Column("updated_at")]
         [JsonPropertyName("updated_at")]
-        public string UpdatedAt { get; set; }   
+        public DateTime UpdatedAt { get; set; }   
 
         [JsonPropertyName("user")]
         public User? User { get; set; }

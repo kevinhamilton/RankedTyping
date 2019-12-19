@@ -25,7 +25,7 @@ namespace RankedTyping.Controllers
         
         // GET /
         [HttpGet]
-        public async Task<OkObjectResult> List()
+        public async Task<ActionResult> List()
         {
             var list = await _context.Achievements
                 .OrderByDescending(a => a.Id)
