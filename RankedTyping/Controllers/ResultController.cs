@@ -39,6 +39,7 @@ namespace RankedTyping.Controllers
             _context.Results.Add(result);
             _context.SaveChanges();
 
+            //If a registered user did this, check for new achievements.
             if (userId > 0)
             {
                 var checker = new CheckForAchievements(_context, userId);
