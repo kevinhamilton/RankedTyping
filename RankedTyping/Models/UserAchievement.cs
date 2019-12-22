@@ -13,7 +13,6 @@ namespace RankedTyping.Models
         [Column("achievement_id")]
         public int AchievementId { get; set; }
         
-        
         [Column("created_at")] 
         [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }
