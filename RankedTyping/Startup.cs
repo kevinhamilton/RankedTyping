@@ -30,6 +30,7 @@ namespace RankedTyping
         {
             services.AddCors();
             services.AddControllers();
+            services.AddMemoryCache();
 
             // configure jwt authentication
             var key = Encoding.ASCII.GetBytes(_config["AppSettings:Secret"]);
