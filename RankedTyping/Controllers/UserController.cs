@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RankedTyping.Models;
@@ -37,6 +38,19 @@ namespace RankedTyping.Controllers
             _context.SaveChanges();
             
             return Ok();
+        }
+        
+        [HttpGet]
+        public ActionResult Achievements()
+        {
+            var user = _context.Users.SingleOrDefault(x => x.Id == Convert.ToInt32(User.Identity.Name));
+            if (user == null) return BadRequest(new {message = "User not found."});
+            
+            var list = _context.Achievements
+                .OrderByDescending(a => a.Id)
+                .ToList();
+            
+            return Ok(list);
         }
     }
 }

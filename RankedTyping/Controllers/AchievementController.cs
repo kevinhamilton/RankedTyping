@@ -1,10 +1,8 @@
 using System;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using RankedTyping.Models;
-using RankedTyping.Responses;
+using Microsoft.AspNetCore.Routing;
+using RankedTyping.Services;
 
 namespace RankedTyping.Controllers
 {
@@ -12,26 +10,32 @@ namespace RankedTyping.Controllers
     [Route("/achievements")]
     public class AchievementController : ControllerBase
     {
-        
-        private readonly RankedContext _context;
+        private IAchievementService _achievementService;
 
         /**
          * Constructor
          */
-        public AchievementController(RankedContext context)
+        public AchievementController(IAchievementService achievementService)
         {
-            _context = context;
+            _achievementService = achievementService;
         }
         
         // GET /
         [HttpGet]
-        public async Task<ActionResult> List()
+        public ActionResult List()
         {
-            var list = await _context.Achievements
-                .OrderByDescending(a => a.Id)
-                .ToListAsync();
-            
-            return Ok(list);
+            var results = _achievementService.LoadAchievements();
+            return Ok(results);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("/user/achievements")]
+        public ActionResult UserAchievements()
+        {
+            var userId = Convert.ToInt32(User.Identity.Name);
+            var result = _achievementService.UserAchievements(userId);
+            return Ok(result);
         }
     }
 }

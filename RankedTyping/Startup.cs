@@ -54,6 +54,7 @@ namespace RankedTyping
 
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAchievementService, AchievementService>();
             
             // other service configurations go here
             // replace "YourDbContext" with the class name of your DbContext
