@@ -1,10 +1,6 @@
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using RankedTyping.Models;
-using RankedTyping.Utils;
+using RankedTyping.Services;
 
 namespace RankedTyping.Controllers
 {
@@ -13,45 +9,22 @@ namespace RankedTyping.Controllers
     public class HistoryController : ControllerBase
     {
         
-        private readonly RankedContext _context;
+        private readonly IResultService _resultService;
 
         /**
          * Constructor
          */
-        public HistoryController(RankedContext context)
+        public HistoryController(IResultService resultService)
         {
-            _context = context;
+            _resultService = resultService;
         }
         
         // GET /
         [HttpGet]
         public async Task<OkObjectResult> List(int page = 1, int size = 20)
         {
-            // Determine the number of records to skip
-            var skip = (page - 1) * size;
-            var take = size;
-
-            // Select the records based on paging parameters
-            var records = await _context.Results
-                .Skip(skip)
-                .Take(take)
-                .ToListAsync();
-
-            // Get total number of records
-            var count = await _context.Results.CountAsync();
-            
-            // Prepare paginated response.
-            return Ok(new PagedResult<Result>
-            {
-                CurrentPage = page,
-                FirstPage = 1,
-                LastPage = (int) Math.Ceiling(Decimal.Divide(count, size)),
-                NextPage = Math.Max(page + 1, 1),
-                PreviousPage = Math.Max(page - 1, 1),
-                PageSize = size,
-                PageCount = count,
-                Results = records
-            });
+            var results = _resultService.List(page, size);
+            return Ok(results);
         }
     }
 }
