@@ -41,8 +41,8 @@ namespace RankedTyping.Controllers
 
             if (userId > 0)
             {
-                var checker = new CheckForAchievements(_context);
-                checker.Check(userId);
+                var checker = new CheckForAchievements(_context, userId);
+                checker.Check();
             }
 
             return Ok(result);

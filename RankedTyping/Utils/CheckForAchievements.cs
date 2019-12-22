@@ -1,27 +1,29 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using RankedTyping.Models;
 
 namespace RankedTyping.Utils
 {
     public class CheckForAchievements
     {
-        private RankedContext _context;
+        private readonly RankedContext _context;
+
+        private readonly int _userId;
+
+        private int _newAchievementPoints;
         
-        public CheckForAchievements(RankedContext context)
+        public CheckForAchievements(RankedContext context, int userId)
         {
             _context = context;
+            _userId = userId;
+            _newAchievementPoints = 0;
         }
         
-        public void Check(int userId)
+        public void Check()
         {
-            var newAchievementPoints = 0;
-
             var stats = _context.Results
-                .Where(r => r.UserId == userId)
+                .Where(r => r.UserId == _userId)
                 .GroupBy(u => u.UserId)
                 .Select(g => new { 
                     AverageWpm = g.Average(i => i.Wpm),
@@ -36,27 +38,8 @@ namespace RankedTyping.Utils
                 .Where(a => a.Count <= stats.TestsTaken)
                 .ToList();
             
-            foreach(var achievement in achievements)
-            {
-                //create if it doesnt already exist.
-                var exists = _context.UserAchievements
-                    .Where(u => u.UserId == userId)
-                    .FirstOrDefault(u => u.AchievementId == achievement.Id);
-
-                //Save if it doesnt exist
-                if (exists == null)
-                {
-                    var newAchievement = new UserAchievement()
-                    {
-                        AchievementId = achievement.Id,
-                        UserId = userId
-                    };
-                    _context.UserAchievements.Add(newAchievement);
-                    
-                    newAchievementPoints += achievement.Points;
-                }
-            }
-            
+            //Sum and prepare the missing achievements
+            AddMissingAchievements(achievements);
             
             //Highest WPM achieve
             var wpmAchievements = _context.Achievements
@@ -64,11 +47,35 @@ namespace RankedTyping.Utils
                 .Where(a => a.Count <= stats.HighestWpm)
                 .ToList();
             
-            foreach(var achievement in wpmAchievements)
+            AddMissingAchievements(wpmAchievements);
+            
+            //Reload user info
+            var user = _context.Users.FirstOrDefault(m => m.Id == _userId);
+            if (user != null && stats != null)
+            {
+                user.HighestWpm = Convert.ToInt16(stats.HighestWpm);
+                user.AverageWpm = Convert.ToInt16(stats.AverageWpm);
+                user.AverageAccuracy = (int) stats.AverageAccuracy;
+                user.TestsTaken = stats.TestsTaken;
+                user.AchievementPoints = user.AchievementPoints + _newAchievementPoints;
+                user.UpdatedAt = DateTime.Now;
+
+                //save
+                _context.Users.Update(user);
+            }
+        }
+
+        /**
+         * Add Missing achievements records. Sum up the total of new achievement
+         * points to be added later.
+         */
+        private void AddMissingAchievements(List<Achievement> achievements)
+        {
+            foreach(var achievement in achievements)
             {
                 //create if it doesnt already exist.
                 var exists = _context.UserAchievements
-                    .Where(u => u.UserId == userId)
+                    .Where(u => u.UserId == _userId)
                     .FirstOrDefault(u => u.AchievementId == achievement.Id);
 
                 //Save if it doesnt exist
@@ -77,28 +84,14 @@ namespace RankedTyping.Utils
                     var newAchievement = new UserAchievement()
                     {
                         AchievementId = achievement.Id,
-                        UserId = userId
+                        UserId = _userId
                     };
                     _context.UserAchievements.Add(newAchievement);
                     
-                    newAchievementPoints += achievement.Points;
+                    _newAchievementPoints += achievement.Points;
                 }
             }
             
-            //Reload user info
-            var user = _context.Users.FirstOrDefault(m => m.Id == userId);
-            if (user != null && stats != null)
-            {
-                user.HighestWpm = Convert.ToInt16(stats.HighestWpm);
-                user.AverageWpm = Convert.ToInt16(stats.AverageWpm);
-                user.AverageAccuracy = (int) stats.AverageAccuracy;
-                user.TestsTaken = stats.TestsTaken;
-                user.AchievementPoints = user.AchievementPoints + newAchievementPoints;
-                user.UpdatedAt = DateTime.Now;
-
-                //save
-                _context.Users.Update(user);
-            }
         }
     }
 }
