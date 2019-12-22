@@ -29,6 +29,9 @@ namespace RankedTyping.Models
         {
             modelBuilder.Entity<UserAchievement>()
                 .HasKey(c => new { c.UserId, c.AchievementId });
+            
+            modelBuilder.Entity<ForgotPassword>()
+                .HasKey(c => new { c.Email, c.Token });
         }
     }
 }

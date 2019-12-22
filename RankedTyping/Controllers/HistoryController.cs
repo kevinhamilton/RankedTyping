@@ -9,7 +9,6 @@ namespace RankedTyping.Controllers
     [Route("/history")]
     public class HistoryController : ControllerBase
     {
-        
         private readonly IResultService _resultService;
 
         /**

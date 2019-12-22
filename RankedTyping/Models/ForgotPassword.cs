@@ -7,9 +7,6 @@ namespace RankedTyping.Models
     [Table("forgot_passwords")]
     public class ForgotPassword
     {
-        [Column("id")]
-        public int Id { get; set; }
-        
         [Column("email")]
         [JsonPropertyName("email")]
         public string Email { get; set; }
