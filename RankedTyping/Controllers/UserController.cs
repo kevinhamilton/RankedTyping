@@ -1,12 +1,10 @@
 using System;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RankedTyping.Services;
 
 namespace RankedTyping.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("/user")]
     public class UserController : ControllerBase
     {
