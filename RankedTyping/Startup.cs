@@ -55,10 +55,10 @@ namespace RankedTyping
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IResultService, ResultService>();
+            services.AddScoped<ITestService, TestService>();
             services.AddScoped<IAchievementService, AchievementService>();
             
             // other service configurations go here
-            // replace "YourDbContext" with the class name of your DbContext
             services.AddDbContextPool<RankedContext>(options => options
                 .UseMySql(_config["AppSettings:ConnectionString"], mySqlOptions => mySqlOptions
                     .ServerVersion(new ServerVersion(new Version(5, 7, 0), ServerType.MySql))

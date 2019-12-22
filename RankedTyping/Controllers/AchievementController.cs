@@ -1,7 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using RankedTyping.Services;
 
 namespace RankedTyping.Controllers
