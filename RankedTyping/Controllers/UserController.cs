@@ -11,7 +11,6 @@ namespace RankedTyping.Controllers
     [Route("/user")]
     public class UserController : ControllerBase
     {
-        
         private readonly RankedContext _context;
 
         public UserController(RankedContext context)
@@ -23,7 +22,21 @@ namespace RankedTyping.Controllers
         public ActionResult Fetch()
         {
             var user = _context.Users.SingleOrDefault(x => x.Id == Convert.ToInt32(User.Identity.Name));
+            if (user == null) return BadRequest(new {message = "User not found."});
             return Ok(user);
+        }
+
+        [HttpPost]
+        [Route("/user/delete")]
+        public ActionResult Delete()
+        {
+            var user = _context.Users.SingleOrDefault(x => x.Id == Convert.ToInt32(User.Identity.Name));
+            if (user == null) return BadRequest(new {message = "User not found."});
+            
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+            
+            return Ok();
         }
     }
 }
