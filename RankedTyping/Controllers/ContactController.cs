@@ -6,7 +6,6 @@ using RankedTyping.Services;
 namespace RankedTyping.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("/contact")]
     public class ContactController : ControllerBase
     {
@@ -23,8 +22,7 @@ namespace RankedTyping.Controllers
         [HttpPost]
         public ActionResult Contact([FromBody] ContactRequest request)
         {
-            var success = _contactService.SendContactNotification(request);
-            if (!success) return BadRequest(new {message = "Unable to send contact request."});
+            _contactService.SendContactNotification(request);
             return Ok();
         }
     }
