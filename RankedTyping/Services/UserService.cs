@@ -14,6 +14,8 @@ namespace RankedTyping.Services
     {
         User Authenticate(string username, string password);
         User Register(string email, string password, string username);
+        User Fetch(int userId);
+        bool Delete(int userId);
     }
 
     public class UserService : IUserService
@@ -87,6 +89,28 @@ namespace RankedTyping.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             user.Token = tokenHandler.WriteToken(token);
             return user;
+        }
+
+        /**
+         * Fetch a user by user id
+         */
+        public User Fetch(int userId)
+        {
+          return _context.Users.SingleOrDefault(x => x.Id == userId);
+        }
+
+        /**
+         * Delete a user by user id
+         */
+        public bool Delete(int userId)
+        {
+            var user = Fetch(userId);
+            if (user == null) return false;
+            
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+            
+            return true;
         }
     }
 }

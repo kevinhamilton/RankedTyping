@@ -1,9 +1,7 @@
 using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RankedTyping.Models;
+using RankedTyping.Services;
 
 namespace RankedTyping.Controllers
 {
@@ -12,17 +10,17 @@ namespace RankedTyping.Controllers
     [Route("/user")]
     public class UserController : ControllerBase
     {
-        private readonly RankedContext _context;
+        private readonly IUserService _userService;
 
-        public UserController(RankedContext context)
+        public UserController(IUserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
 
         [HttpGet]
         public ActionResult Fetch()
         {
-            var user = _context.Users.SingleOrDefault(x => x.Id == Convert.ToInt32(User.Identity.Name));
+            var user = _userService.Fetch(Convert.ToInt32(User.Identity.Name));
             if (user == null) return BadRequest(new {message = "User not found."});
             return Ok(user);
         }
@@ -31,26 +29,9 @@ namespace RankedTyping.Controllers
         [Route("/user/delete")]
         public ActionResult Delete()
         {
-            var user = _context.Users.SingleOrDefault(x => x.Id == Convert.ToInt32(User.Identity.Name));
-            if (user == null) return BadRequest(new {message = "User not found."});
-            
-            _context.Users.Remove(user);
-            _context.SaveChanges();
-            
+            var deleted = _userService.Delete(Convert.ToInt32(User.Identity.Name));
+            if (!deleted) return BadRequest(new {message = "User not found."});
             return Ok();
-        }
-        
-        [HttpGet]
-        public ActionResult Achievements()
-        {
-            var user = _context.Users.SingleOrDefault(x => x.Id == Convert.ToInt32(User.Identity.Name));
-            if (user == null) return BadRequest(new {message = "User not found."});
-            
-            var list = _context.Achievements
-                .OrderByDescending(a => a.Id)
-                .ToList();
-            
-            return Ok(list);
         }
     }
 }
