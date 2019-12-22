@@ -56,6 +56,7 @@ namespace RankedTyping
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IResultService, ResultService>();
             services.AddScoped<ITestService, TestService>();
+            services.AddScoped<ILeaderboardService, LeaderboardService>();
             services.AddScoped<IAchievementService, AchievementService>();
             
             // other service configurations go here

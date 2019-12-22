@@ -40,7 +40,7 @@ namespace RankedTyping.Services
 
                 // Set cache options. I really don't want this to expire as new tests are never added.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+                    .SetSlidingExpiration(TimeSpan.FromDays(1));
 
                 // Save data in cache.
                 _cache.Set(cacheKey, cachedResults, cacheEntryOptions);
