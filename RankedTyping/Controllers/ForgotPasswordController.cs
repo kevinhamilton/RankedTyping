@@ -22,7 +22,7 @@ namespace RankedTyping.Controllers
         public ActionResult SendResetEmail([FromBody] SendResetEmailRequest request)
         {
             var response = _forgotPasswordService.SendResetEmail(request);
-            if (!response)
+            if (response == null)
                 return BadRequest(new { message = "Unable to send reset password information" });
             return Ok();
         }

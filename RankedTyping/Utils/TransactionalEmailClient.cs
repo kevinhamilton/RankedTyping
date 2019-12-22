@@ -27,7 +27,7 @@ namespace RankedTyping.Utils
                 .CreateBody()
                 .Paragraph("Hello,")
                 .Paragraph(message)
-                .Button("https://rankedtyping.com/" + link, linkText)
+                .Button("https://rankedtyping.com" + link, linkText)
                 .Paragraph("- RankedTyping Team")
                 .ToString();
             
