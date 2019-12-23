@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RankedTyping.Models;
+using RankedTyping.Request;
 using RankedTyping.Utils;
 
 namespace RankedTyping.Services
@@ -16,6 +17,9 @@ namespace RankedTyping.Services
         User Register(string email, string password, string username);
         User Fetch(int userId);
         bool Delete(int userId);
+        bool ChangePassword(int userId, ResetPasswordRequest request);
+        bool ChangeEmail(int userId, ChangeEmailRequest request);
+        bool ChangeUsername(int userId, ChangeUsernameRequest request);
     }
 
     public class UserService : IUserService
@@ -110,6 +114,61 @@ namespace RankedTyping.Services
             _context.Users.Remove(user);
             _context.SaveChanges();
             
+            return true;
+        }
+
+        public bool ChangePassword(int userId, ResetPasswordRequest request)
+        {
+            var user = Fetch(userId);
+            if (user == null) return false;
+
+            user.Password = BCrypt.Net.BCrypt.HashPassword(request.password);
+            _context.Users.Update(user);
+            _context.SaveChanges();
+
+            return true;
+        }
+
+        public bool ChangeEmail(int userId, ChangeEmailRequest request)
+        {
+            var user = Fetch(userId);
+            if (user == null) return false;
+            
+            //verify its not already being used
+            var exists = _context.Users
+                .Where(u => u.Email == request.email)
+                .FirstOrDefault(e => e.Id != userId);
+            
+            if (exists != null) return false;
+            
+            var helper = new GravatarHelper();
+
+            user.Email = request.email;
+            user.EmailMd5 = helper.CalculateMD5Hash(request.email);
+            
+            _context.Users.Update(user);
+            _context.SaveChanges();
+
+            return true;
+        }
+
+        public bool ChangeUsername(int userId, ChangeUsernameRequest request)
+        {
+            var user = Fetch(userId);
+            if (user == null) return false;
+            
+            //verify its not already being used
+            var exists = _context.Users
+                .Where(u => u.Username == request.username)
+                .FirstOrDefault(e => e.Id != userId);
+            
+            if (exists != null) return false;
+
+            user.Username = request.username;
+            
+            _context.Users.Update(user);
+            _context.SaveChanges();
+
             return true;
         }
     }
