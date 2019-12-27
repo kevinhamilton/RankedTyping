@@ -19,12 +19,12 @@ namespace RankedTyping
     public class Startup
     {
         private IConfiguration _config { get; }
-        
+
         public Startup(IConfiguration configuration)
         {
             _config = configuration;
         }
-        
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -33,7 +33,7 @@ namespace RankedTyping
             services.AddMemoryCache();
 
             // configure jwt authentication
-            var key = Encoding.ASCII.GetBytes(_config["AppSettings:Secret"]);
+            var key = Encoding.ASCII.GetBytes(_config["RankedSettings_Secret"]);
             services.AddAuthentication(x =>
                 {
                     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -42,7 +42,7 @@ namespace RankedTyping
                 .AddJwtBearer(x =>
                 {
                     x.RequireHttpsMetadata = false;
-                    x.SaveToken = true; 
+                    x.SaveToken = true;
                     x.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
@@ -60,10 +60,10 @@ namespace RankedTyping
             services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
             services.AddScoped<ILeaderboardService, LeaderboardService>();
             services.AddScoped<IAchievementService, AchievementService>();
-            
+
             // other service configurations go here
             services.AddDbContextPool<RankedContext>(options => options
-                .UseMySql(_config["AppSettings:ConnectionString"], mySqlOptions => mySqlOptions
+                .UseMySql(_config["RankedSettings_ConnectionString"], mySqlOptions => mySqlOptions
                     .ServerVersion(new ServerVersion(new Version(5, 7, 0), ServerType.MySql))
                 ));
         }
@@ -76,12 +76,12 @@ namespace RankedTyping
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseRouting();
-            
+
             app.UseAuthentication();
             app.UseAuthorization();
-            
+
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()

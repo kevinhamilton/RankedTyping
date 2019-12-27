@@ -20,8 +20,8 @@ namespace RankedTyping.Utils
         
         public async Task<bool> SendEmail(List<string> to, string subject, string message, string link, string linkText)
         {
-            var awsAccessKeyId = _config["AppSettings:AwsAccessKeyId"];
-            var awsSecretAccessKey = _config["AppSettings:AwsSecretAccessKey"];
+            var awsAccessKeyId = _config["RankedSettings_AwsAccessKeyId"];
+            var awsSecretAccessKey = _config["RankedSettings_AwsSecretAccessKey"];
             
             var body = MailBody
                 .CreateBody()

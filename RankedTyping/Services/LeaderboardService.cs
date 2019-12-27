@@ -11,7 +11,7 @@ namespace RankedTyping.Services
 {
     public interface ILeaderboardService
     {
-        public Task<LeaderboardResponse> List();
+        public LeaderboardResponse List();
         public Task<List<User>> ListByAchievements();
     }
 
@@ -30,47 +30,30 @@ namespace RankedTyping.Services
         /**
          * List the top 10 users of the day, of all time and the last 10
          */
-        public async Task<LeaderboardResponse> List()
+        public LeaderboardResponse List()
         {
-            var cacheKey = "leaderboard";
-            
-            LeaderboardResponse results;
+            // Key not in cache, so generate cache data.
+            var leaders = _context.Results
+                .OrderByDescending(r => r.Wpm)
+                .ThenBy(r => r.Id)
+                .Include(r => r.User)
+                .Take(10)
+                .ToList();
 
-            // Look for cache key.
-            if (! _cache.TryGetValue(cacheKey, out results))
-            {
-                // Key not in cache, so generate cache data.
-                var leaders = await _context.Results
-                    .OrderByDescending(r => r.Wpm)
-                    .ThenBy(r => r.Id)
-                    .Include(r => r.User)
-                    .Take(10)
-                    .ToListAsync();
+            var recent = _context.Results
+                .OrderByDescending(r => r.Id)
+                .Include(r => r.User)
+                .Take(10)
+                .ToList();
 
-                var recent = await _context.Results
-                    .OrderByDescending(r => r.Id)
-                    .Include(r => r.User)
-                    .Take(10)
-                    .ToListAsync();
+            var today = _context.Results
+               // .Where(r => Convert.ToDateTime(r.CreatedAt).CompareTo( DateTime.Now.AddDays(-1) ) >= 0)
+                .OrderByDescending(r => r.Id)
+                .Include(r => r.User)
+                .Take(10)
+                .ToList();
 
-                var today = await _context.Results
-                    .Where(r => Convert.ToDateTime(r.CreatedAt).CompareTo(DateTime.Now.AddDays(-1)) > 1)
-                    .OrderByDescending(r => r.Id)
-                    .Include(r => r.User)
-                    .Take(10)
-                    .ToListAsync();
-
-                results = new LeaderboardResponse { Leaders = leaders, Recent = recent, Today = today };
-
-                // Set cache options.
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromSeconds(10));
-
-                // Save data in cache.
-                _cache.Set(cacheKey, results, cacheEntryOptions);
-            }
-
-            return results;
+            return new LeaderboardResponse { Leaders = leaders, Recent = recent, Today = today };
         }
 
         /**

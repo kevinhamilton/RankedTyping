@@ -5,7 +5,7 @@ namespace RankedTyping.Request
     public class ResultRequest
     {
         [Required]
-        public int wpm { get; set; }
+        public double wpm { get; set; }
         
         [Required]
         public int good_keystrokes { get; set; }

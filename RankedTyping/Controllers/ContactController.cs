@@ -18,12 +18,15 @@ namespace RankedTyping.Controllers
         {
             _contactService = contactService;
         }
-        
+
         [HttpPost]
         public ActionResult Contact([FromBody] ContactRequest request)
         {
-            _contactService.SendContactNotification(request);
-            return Ok();
+            var success = _contactService.SendContactNotification(request);
+            if(!success){
+                return BadRequest(new {message = "Unable to send contact message."});
+            }
+            return Ok(new {message = "Thank you for your feedback! We will review it shortly."});
         }
     }
 }

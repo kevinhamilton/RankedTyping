@@ -42,7 +42,13 @@ namespace RankedTyping.Services
             var user = _context.Users.SingleOrDefault(x => x.Email == email);
 
             if (user == null)
-                return null;
+            {
+                user = _context.Users.SingleOrDefault(x => x.Username == email);
+                if (user == null)
+                {
+                    return null;
+                }
+            }
             
             if ( ! BCrypt.Net.BCrypt.Verify(password, user.Password)) 
                 return null;
@@ -61,7 +67,7 @@ namespace RankedTyping.Services
             {
                 Email = email,
                 Username = username,
-                Password = password,
+                Password = BCrypt.Net.BCrypt.HashString(password),
                 EmailMd5 = gravatar.CalculateMD5Hash(email),
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
@@ -79,7 +85,7 @@ namespace RankedTyping.Services
         private User AppendToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_config["AppSettings:Secret"]);
+            var key = Encoding.ASCII.GetBytes(_config["RankedSettings_Secret"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]

@@ -38,20 +38,18 @@ namespace RankedTyping.Services
 
         public List<Achievement> LoadAchievements()
         {
-            var cacheKey = "achievements";
+            var cacheKey = "achievement-list";
             List<Achievement> results;
             
             // Look for cache key.
             if (! _cache.TryGetValue(cacheKey, out results))
             {
                 // Key not in cache, so generate cache data.
-                results = _context.Achievements
-                    .OrderByDescending(a => a.Id)
-                    .ToList();
+                results = _context.Achievements.ToList();
 
                 // Set cache options. I really don't want this to expire as new tests are never added.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+                    .SetSlidingExpiration(TimeSpan.FromDays(30));
 
                 // Save data in cache.
                 _cache.Set(cacheKey, results, cacheEntryOptions);

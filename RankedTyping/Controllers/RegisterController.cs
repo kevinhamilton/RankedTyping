@@ -6,7 +6,6 @@ using RankedTyping.Services;
 namespace RankedTyping.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("/register")]
     public class RegisterController : ControllerBase
     {

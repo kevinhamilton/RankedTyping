@@ -27,7 +27,7 @@ namespace RankedTyping.Services
             var result = new Result()
             {
                 UserId = (userId > 0) ? userId : null as int?,
-                Wpm = request.wpm,
+                Wpm = Convert.ToInt32(request.wpm),
                 TestId = request.test_id,
                 GoodKeystrokes = request.good_keystrokes,
                 BadKeystrokes = request.bad_keystrokes,

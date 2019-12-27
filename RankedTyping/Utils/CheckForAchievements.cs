@@ -84,7 +84,9 @@ namespace RankedTyping.Utils
                     var newAchievement = new UserAchievement()
                     {
                         AchievementId = achievement.Id,
-                        UserId = _userId
+                        UserId = _userId,
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now
                     };
                     _context.UserAchievements.Add(newAchievement);
                     

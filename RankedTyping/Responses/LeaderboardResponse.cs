@@ -5,8 +5,8 @@ namespace RankedTyping.Responses
 {
     public class LeaderboardResponse
     {
-        public List<Result> Leaders { get; set; }
-        public List<Result> Recent { get; set; }
-        public List<Result> Today { get; set; }
+        public IList<Result> Leaders { get; set; } = new List<Result>();
+        public IList<Result> Recent { get; set; } = new List<Result>();
+        public IList<Result> Today { get; set; } = new List<Result>();
     }
 }

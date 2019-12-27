@@ -32,9 +32,9 @@ namespace RankedTyping.Controllers
         {
             var deleted = _userService.Delete(Convert.ToInt32(User.Identity.Name));
             if (!deleted) return BadRequest(new {message = "User not found."});
-            return Ok();
+            return Ok(new {message = "User deleted."});
         }
-        
+
         [HttpPost]
         [Authorize]
         [Route("/user/change-password")]
@@ -42,7 +42,7 @@ namespace RankedTyping.Controllers
         {
             var success = _userService.ChangePassword(Convert.ToInt32(User.Identity.Name), request);
             if (!success) return BadRequest(new {message = "User not found."});
-            return Ok();
+            return Ok(new {message = "Password changed."});
         }
 
         [HttpPost]
@@ -52,7 +52,7 @@ namespace RankedTyping.Controllers
         {
             var deleted = _userService.ChangeEmail(Convert.ToInt32(User.Identity.Name), request);
             if (!deleted) return BadRequest(new {message = "Email is already in use."});
-            return Ok();
+            return Ok(new {message = "Email changed."});
         }
         [HttpPost]
         [Route("/user/change-username")]
@@ -60,7 +60,7 @@ namespace RankedTyping.Controllers
         {
             var deleted = _userService.ChangeUsername(Convert.ToInt32(User.Identity.Name), request);
             if (!deleted) return BadRequest(new {message = "Username already exists."});
-            return Ok();
+            return Ok(new {message = "Username changed."});
         }
     }
 }

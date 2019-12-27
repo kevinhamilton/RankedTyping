@@ -3,13 +3,14 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using RankedTyping.Models;
 using RankedTyping.Request;
+using RankedTyping.Responses;
 using RankedTyping.Utils;
 
 namespace RankedTyping.Services
 {
     public interface IContactService
     {
-        public Task<bool> SendContactNotification(ContactRequest request);
+        public bool SendContactNotification(ContactRequest request);
     }
 
     public class ContactService : IContactService
@@ -20,17 +21,17 @@ namespace RankedTyping.Services
         {
             _config = config;
         }
-        
-        public async Task<bool> SendContactNotification(ContactRequest request)
+
+        public bool SendContactNotification(ContactRequest request)
         {
-            var contactEmail = _config["AppSettings:ContactEmail"];
+            var contactEmail = _config["RankedSettings_ContactEmail"];
             var to = new List<string> { contactEmail };
-            
+
             var client = new TransactionalEmailClient(_config);
-            
-            await client.SendEmail(
-                to, 
-                "Contact Form: " + request.subject, 
+
+            client.SendEmail(
+                to,
+                "Contact Form: " + request.subject,
                 request.message,
                 "",
                 "Contact");
