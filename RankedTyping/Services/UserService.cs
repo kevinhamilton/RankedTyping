@@ -92,7 +92,7 @@ namespace RankedTyping.Services
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString())
                 }),
-                Expires = DateTime.Now.AddDays(7),
+                Expires = DateTime.Now.AddYears(10),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
             };

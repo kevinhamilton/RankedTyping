@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using RankedTyping.Utils;
 
 namespace RankedTyping.Models
 {
@@ -52,5 +53,20 @@ namespace RankedTyping.Models
 
         [JsonPropertyName("user")]
         public User? User { get; set; }
+        
+        [NotMapped]
+        private string timeSinceTest;
+        
+        [NotMapped]
+        [JsonPropertyName("time_since_test")]
+        public string TimeSinceTest
+        {
+            get { return HoursAgo.AsString(CreatedAt); }
+            set
+            {
+                // do your fancy stuff or just jobTitle = value
+                timeSinceTest = HoursAgo.AsString(CreatedAt);
+            }
+        }
     }
 }

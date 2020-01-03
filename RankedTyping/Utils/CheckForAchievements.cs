@@ -62,6 +62,7 @@ namespace RankedTyping.Utils
 
                 //save
                 _context.Users.Update(user);
+                _context.SaveChanges();
             }
         }
 
